@@ -40,7 +40,9 @@ bool PSO::selection()
 	eliteData = data[max_num];//最も評価の良い個体を保持
 	if (prev_data[max_num].functionValue - eliteData.functionValue != 0)//最も評価の良い個体の変化の監視(デバッグ用)
 		ret = true;
-	prev_data = data;
+
+	setPosition();
+	/*prev_data = data;
 	for (int i = 0; i < max_genom_list; i++)
 	{
 		double selector = random(0.0, 1.0);//乱数を生成
@@ -55,11 +57,11 @@ bool PSO::selection()
 				break;
 		}
 		data[i] = prev_data[j];
-	}
+	}*/
 	return ret;
 }
 
-bool PSO::blxAlphaCrossover()
+/*bool PSO::blxAlphaCrossover()
 {
 	prev_data = data;
 
@@ -75,9 +77,9 @@ bool PSO::blxAlphaCrossover()
 		}
 	}
 	return true;
-}
+}*/
 
-bool PSO::mutation()
+/*bool PSO::mutation()
 {
 	for (int i = 0; i < max_genom_list; i++)
 	{
@@ -90,7 +92,7 @@ bool PSO::mutation()
 		}
 	}
 	return true;
-}
+}*/
 
 bool PSO::calc(bool enableDisplay)
 {
@@ -124,7 +126,14 @@ void PSO::setPosition(void)
 	{
 		for (int j = 0; j < data[i].v.size(); j++)
 		{
-
+			data[i].v[j] = w * data[i].v[j] + c1 * random(0.0, 1.0)*(data[i].x_pbset[j] - data[i].x[j]) + c2 * random(0.0, 1.0)*(eliteData.x[j]-data[i].x[j]);
+		}
+	}
+	for (int i = 0; i < data.size(); i++)
+	{
+		for (int j = 0; j < data[i].x.size(); j++)
+		{
+			data[i].x[j] += data[i].v[j];
 		}
 	}
 }
@@ -133,13 +142,21 @@ bool PSO::calcResult(bool enableSort)
 {
 	int maxNum = 0;
 	double seg;
+	
 	for (int i = 0; i < max_genom_list; i++)
 	{
 		data[i].functionValue = std::sin(data[i].x[0] + data[i].x[1]) + std::pow((data[i].x[0] - data[i].x[1]), 2.0) - 1.5*data[i].x[0] + 2.5*data[i].x[1] + 1;//与えられた関数
-		if (data[maxNum].functionValue < data[i].functionValue)//座標の中で最も関数が大きいやつを検索
+		if (data[i].functionValue < data[i].functionValuePbset)
+		{
+			data[i].functionValuePbset = data[i].functionValue;
+			data[i].x_pbset = data[i].x;
+
+		}
+
+		/*if (data[maxNum].functionValue < data[i].functionValue)//座標の中で最も関数が大きいやつを検索
 		{
 			maxNum = i;
-		}
+		}*/
 	}
 	seg = data[maxNum].functionValue;//評価関数の切片を与えられた関数が最も大きいやつにセット
 	resultSumValue = 0;
@@ -154,6 +171,7 @@ bool PSO::calcResult(bool enableSort)
 				flag = false;
 		}
 		data[i].result = std::pow((data[i].functionValue - seg), 2.0);//与えられた関数の値から切片で設定した値を引いて2乗する→与えられた関数の値が小さいやつが強くなる
+		//data[i].result = 1 / data[i].functionValue;
 
 		if (!flag)//場外に出たやつの処理
 			data[i].result *= coefficient;

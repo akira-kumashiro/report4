@@ -24,13 +24,16 @@ public:
 	{
 	public:
 		std::vector<double> x;//座標
+		std::vector<double> x_pbset;//座標
 		std::vector<double> v;
 		double functionValue;//与えられた関数の値
+		double functionValuePbset;
 		double result;
 
 		Data(int _var_num)://コンストラクタ
 			x(std::vector<double>(_var_num)),
-			v(std::vector<double>(_var_num))
+			v(std::vector<double>(_var_num)),
+			x_pbset(std::vector<double>(_var_num))
 		{
 		}
 	};
@@ -40,8 +43,8 @@ public:
 	PSO(int _max_genom_list, int _var_num, std::vector<double> _varMax, std::vector<double> _varMin);	//コンストラクタ
 	bool selection();//選択
 
-	bool blxAlphaCrossover();
-	bool mutation();//突然変異
+	//bool blxAlphaCrossover();
+	//bool mutation();//突然変異
 	bool calc(bool enableDisplay);//評価関数の計算
 	void setPosition(void);
 private:
