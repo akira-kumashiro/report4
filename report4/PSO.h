@@ -10,9 +10,7 @@
 class PSO
 {
 private:
-	int max_genom_list;//個体数
-	int var_num;//品物の個数
-	int minNum = 0, maxNum = 0;
+	int minNum = 0;
 	double c1 = 0.5;
 	double c2 = 0.5;
 	double w = 0.5;
@@ -30,7 +28,7 @@ public:
 		double functionValuePbset;
 		double result;
 
-		Data(int _var_num)://コンストラクタ
+		Data(int _var_num) ://コンストラクタ
 			x(std::vector<double>(_var_num)),
 			v(std::vector<double>(_var_num)),
 			x_pbset(std::vector<double>(_var_num))
@@ -42,18 +40,15 @@ public:
 	Data eliteData;
 	PSO(int _max_genom_list, int _var_num, std::vector<double> _varMax, std::vector<double> _varMin);	//コンストラクタ
 	bool selection();//選択
-
-	//bool blxAlphaCrossover();
-	//bool mutation();//突然変異
-	bool calc(bool enableDisplay);//評価関数の計算
+	void calc(bool enableDisplay);//評価関数の計算
 	void setPosition(void);
 private:
-	bool calcResult(bool enableSort);
+	void calcResult(bool enableSort);
 	int random(int min, int max);
 	double random(int min, double max);
 	double random(double min, int max);
 	double random(double min, double max);
-	bool displayValues();
-	; public:
-		~PSO();//デコンストラクタ
+	void displayValues();
+public:
+	~PSO();//デコンストラクタ
 };
